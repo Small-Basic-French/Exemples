@@ -1,0 +1,29 @@
+' Durée de déplacement
+delay = 2000
+' Longueur de déplacement
+move = 200
+
+' Création de la balle
+GraphicsWindow.Show()
+ball = Shapes.AddEllipse(20,20)
+ballPos = 0
+Shapes.Move(ball, 10 + ballPos,10)
+
+' Démarre la timeline
+startTimeline = Clock.ElapsedMilliseconds
+' Boucle 
+While ballPos < move
+  ' On calcul où on se trouve dans la timeline
+  timeline = Clock.ElapsedMilliseconds - startTimeline
+  ' On calcul la position de la balle en fonction de la timeline
+  ballPos = (timeline * move) / delay
+  ' Déplacement de la balle
+  Shapes.Move(ball, 10 + ballPos,10)
+  ' Simule un calcul plus ou moins long qui perturbe notre programme
+  If ballPos < move/2 Then
+    Program.Delay(Math.GetRandomNumber(150))
+  EndIf
+EndWhile
+' On calcul le temps qu'on a mis
+GraphicsWindow.Title = Clock.ElapsedMilliseconds - startTimeline
+

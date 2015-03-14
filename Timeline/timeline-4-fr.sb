@@ -1,0 +1,61 @@
+' Durée de déplacement
+delay = 2000
+' Longueur de déplacement
+move = 200
+
+' Création de la balle
+GraphicsWindow.Show()
+ball = Shapes.AddEllipse(20,20)
+ballPos = 0
+ballPosX = 0
+ballPosY = 0
+offX = 1
+offY = 0
+Shapes.Move(ball, 10 + ballPosX,10 + ballPosY)
+
+' Branche l'appui de touche
+GraphicsWindow.KeyDown = OnKeyDown
+
+' Démarre la timeline
+startTimeline = Clock.ElapsedMilliseconds
+lastTimeline = 0
+' Boucle 
+While ballPos < move
+  ' On calcul où on se trouve dans la timeline
+  timeline = Clock.ElapsedMilliseconds - startTimeline
+  ' On calcul le temps écoulé depuis la dernière boucle
+  elapsed = timeline - lastTimeline
+  ' On calcul le déplacement qu'a fait la balle pendant ce laps de temp
+  ballMovement = (elapsed * move) / delay
+  ' On ajoute le déplacement à la position de la balle 
+  ballPos = ballPos + ballMovement
+  ballPosX = ballPosX + (ballMovement * offX)
+  ballPosY = ballPosY + (ballMovement * offY)
+  ' Déplacement de la balle
+  Shapes.Move(ball, 10 + ballPosX,10 + ballPosY)
+  ' Simule un calcul plus ou moins long qui perturbe notre programme
+  If ballPos < move/2 Then
+    Program.Delay(Math.GetRandomNumber(150))
+  EndIf
+  ' On enregistre la timeline pour la prochaine boucle
+  lastTimeline = timeline
+EndWhile
+' On calcul le temps qu'on a mis
+GraphicsWindow.Title = Clock.ElapsedMilliseconds - startTimeline
+
+Sub OnKeyDown
+  If GraphicsWindow.LastKey = "Up" Then
+    offX = 0
+    offY = -1
+  ElseIf GraphicsWindow.LastKey = "Down" Then
+    offX = 0
+    offY = 1
+  ElseIf GraphicsWindow.LastKey = "Left" Then
+    offX = -1
+    offY = 0
+  ElseIf GraphicsWindow.LastKey = "Right" Then
+    offX = 1
+    offY = 0
+  EndIf
+EndSub
+  

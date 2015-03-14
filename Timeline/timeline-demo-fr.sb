@@ -1,0 +1,63 @@
+' Préparation de la fenêtre
+GraphicsWindow.Show()
+GraphicsWindow.Height = 480
+GraphicsWindow.Width = 640
+GraphicsWindow.KeyDown = OnKeyDown
+
+' Création de 10 balles
+balls=""
+For i = 1 To 10
+  GraphicsWindow.BrushColor = GraphicsWindow.GetRandomColor()
+  balls[i]["shape"] = Shapes.AddEllipse(20,20)
+  balls[i]["x"] = 10
+  balls[i]["y"] = 10 + (40*i)
+  balls[i]["startTimeline"] = Clock.ElapsedMilliseconds
+  balls[i]["timeline"] = 0
+  balls[i]["lastTimeline"] = 0
+  balls[i]["speed"] = 10 + Math.GetRandomNumber(500)
+  Shapes.Move(balls[i]["shape"], balls[i]["x"], balls[i]["y"])
+EndFor
+
+' Boucle
+While "True"
+  '  Pour chaque balle
+  For i = 1 To 10
+    ' Calcul la timeline de la balle
+    balls[i]["timeline"] = Clock.ElapsedMilliseconds - balls[i]["startTimeline"]
+    
+    ' Calcul le temps passé
+    elapsed = balls[i]["timeline"] - balls[i]["lastTimeline"]
+    
+    ' Calcul le nombre de pixel de déplacement en fonction de la vitesse
+    move = (elapsed/1000) * balls[i]["speed"]
+    
+    ' On déplace la balle
+    balls[i]["x"] = balls[i]["x"] + move
+    Shapes.Move(balls[i]["shape"], balls[i]["x"], balls[i]["y"])
+    
+    ' Si la balle à atteinds la droite de l'écran on replace la balle au début et on modifie la vitesse
+    ' on  réinitialise la timeline
+    If balls[i]["x"] >= GraphicsWindow.Width - 40 Then
+      balls[i]["x"] = 10
+      balls[i]["startTimeline"] = Clock.ElapsedMilliseconds
+      balls[i]["timeline"] = 0
+      balls[i]["lastTimeline"] = 0
+      balls[i]["speed"] = 10 + Math.GetRandomNumber(500)
+    EndIf
+    
+    ' Enregistre la timeline pour la prochaine fois
+    balls[i]["lastTimeline"] = balls[i]["timeline"]
+  EndFor
+  '  On repose l'ordinateur
+  Program.Delay(25)
+EndWhile
+
+' Gestion du clavier
+Sub OnKeyDown
+  ' Si on appuie sur Echap alors on quitte le programme
+  If GraphicsWindow.LastKey = "Escape" Then
+    Program.End()
+  EndIf
+  
+EndSub
+  

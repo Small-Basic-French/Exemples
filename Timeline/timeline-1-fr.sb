@@ -1,0 +1,23 @@
+' Durée de déplacement
+delay = 2000
+' Longueur de déplacement
+move = 200
+
+' Création de la balle
+GraphicsWindow.Show()
+ball = Shapes.AddEllipse(20,20)
+ballPos = 0
+Shapes.Move(ball, 10 + ballPos,10)
+
+' Calcul la référence de temps
+start = Clock.ElapsedMilliseconds
+' Boucle 
+For i = 1 To move
+  ' On déplace la balle d'un pixel
+  ballPos = ballPos + 1
+  Shapes.Move(ball, 10 + ballPos,10)
+  ' On attends delay/move millisecondes
+  Program.Delay(delay/move)
+EndFor
+' On calcul le temps qu'on a mis
+GraphicsWindow.Title = Clock.ElapsedMilliseconds - start
