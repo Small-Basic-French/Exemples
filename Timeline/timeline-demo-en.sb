@@ -1,0 +1,63 @@
+' Prepare the windows
+GraphicsWindow.Show()
+GraphicsWindow.Height = 480
+GraphicsWindow.Width = 640
+GraphicsWindow.KeyDown = OnKeyDown
+
+' Create 10 balls
+balls=""
+For i = 1 To 10
+  GraphicsWindow.BrushColor = GraphicsWindow.GetRandomColor()
+  balls[i]["shape"] = Shapes.AddEllipse(20,20)
+  balls[i]["x"] = 10
+  balls[i]["y"] = 10 + (40*i)
+  balls[i]["startTimeline"] = Clock.ElapsedMilliseconds
+  balls[i]["timeline"] = 0
+  balls[i]["lastTimeline"] = 0
+  balls[i]["speed"] = 10 + Math.GetRandomNumber(500)
+  Shapes.Move(balls[i]["shape"], balls[i]["x"], balls[i]["y"])
+EndFor
+
+' Loop
+While "True"
+  '  For each ball
+  For i = 1 To 10
+    ' Calculate the timeline
+    balls[i]["timeline"] = Clock.ElapsedMilliseconds - balls[i]["startTimeline"]
+    
+    ' Calculate the elapsed time
+    elapsed = balls[i]["timeline"] - balls[i]["lastTimeline"]
+    
+    ' Calculate the pixel move based on speed
+    move = (elapsed/1000) * balls[i]["speed"]
+    
+    ' Move the ball
+    balls[i]["x"] = balls[i]["x"] + move
+    Shapes.Move(balls[i]["shape"], balls[i]["x"], balls[i]["y"])
+    
+    ' If the ball reached the right of windows we move the ball to the start and change the speed
+    ' and reset the timeline
+    If balls[i]["x"] >= GraphicsWindow.Width - 40 Then
+      balls[i]["x"] = 10
+      balls[i]["startTimeline"] = Clock.ElapsedMilliseconds
+      balls[i]["timeline"] = 0
+      balls[i]["lastTimeline"] = 0
+      balls[i]["speed"] = 10 + Math.GetRandomNumber(500)
+    EndIf
+    
+    ' Save the timeline for the next loop
+    balls[i]["lastTimeline"] = balls[i]["timeline"]
+  EndFor
+  ' Pause the computer
+  Program.Delay(25)
+EndWhile
+
+' Handle keyboard
+Sub OnKeyDown
+  ' If press 'Escape' quit the program
+  If GraphicsWindow.LastKey = "Escape" Then
+    Program.End()
+  EndIf
+  
+EndSub
+  

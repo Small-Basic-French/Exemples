@@ -1,0 +1,23 @@
+' Move delay in ms
+delay = 2000
+' Move width in pixel
+move = 200
+
+' Create the ball
+GraphicsWindow.Show()
+ball = Shapes.AddEllipse(20,20)
+ballPos = 0
+Shapes.Move(ball, 10 + ballPos,10)
+
+' Reference the time
+start = Clock.ElapsedMilliseconds
+' Loop
+For i = 1 To move
+  ' Move the ball to one pixel
+  ballPos = ballPos + 1
+  Shapes.Move(ball, 10 + ballPos,10)
+  ' We wait delay/move milliseconds
+  Program.Delay(delay/move)
+EndFor
+' Calculate the real time used
+GraphicsWindow.Title = Clock.ElapsedMilliseconds - start

@@ -1,0 +1,29 @@
+' Move delay in ms
+delay = 2000
+' Move width in pixel
+move = 200
+
+' Create the ball
+GraphicsWindow.Show()
+ball = Shapes.AddEllipse(20,20)
+ballPos = 0
+Shapes.Move(ball, 10 + ballPos,10)
+
+' Start the timeline
+startTimeline = Clock.ElapsedMilliseconds
+' Loop
+While ballPos < move
+  ' Where we are in the timeline ?
+  timeline = Clock.ElapsedMilliseconds - startTimeline
+  ' Calculate the ball position based on the timeline
+  ballPos = (timeline * move) / delay
+  ' Move the ball
+  Shapes.Move(ball, 10 + ballPos,10)
+  ' Simulate a long calculation to disrupts our program
+  If ballPos < move/2 Then
+    Program.Delay(Math.GetRandomNumber(150))
+  EndIf
+EndWhile
+' Calculate the real time used
+GraphicsWindow.Title = Clock.ElapsedMilliseconds - startTimeline
+

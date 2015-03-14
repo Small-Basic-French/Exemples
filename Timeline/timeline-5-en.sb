@@ -1,0 +1,77 @@
+' Build the game board
+GraphicsWindow.Show()
+GraphicsWindow.KeyDown = OnKeyDown
+gameTitle = Shapes.AddText("")
+
+' First element : a ball
+elm[0]["shape"] = Shapes.AddEllipse(20,20)
+elm[0]["x"] = 40
+elm[0]["y"] = 40
+elm[0]["startTimeline"] = -1
+elm[0]["timeline"] = -1
+Shapes.Move(elm[0]["shape"], elm[0]["x"], elm[0]["y"])
+
+' Second element : a box
+GraphicsWindow.BrushColor = "Yellow"
+elm[1]["shape"] = Shapes.AddRectangle(20,20)
+elm[1]["x"] = 40
+elm[1]["y"] = 140
+elm[1]["startTimeline"] = Clock.ElapsedMilliseconds
+elm[1]["timeline"] = -1
+Shapes.Move(elm[1]["shape"], elm[1]["x"], elm[1]["y"])
+
+' Init the game
+gameStartTime = Clock.ElapsedMilliseconds
+gameTime = 0
+
+' Game loop
+While "True"
+  ' Game timeline calculation
+  gameTime = Clock.ElapsedMilliseconds -  gameStartTime
+  
+  ' Display the title
+  title = "Game Time : " + Math.Floor(gameTime / 1000) + " seconds"
+  title = title + " | Ball : " + elm[0]["timeline"]
+  title = title + " | Box : " + elm[1]["timeline"]
+  Shapes.SetText(gameTitle, title)
+  
+  ' Calculate the timeline for each element
+  For i = 0 To 1
+    stl = elm[i]["startTimeline"]
+    If stl > 0 Then
+      elm[i]["timeline"] = Clock.ElapsedMilliseconds - stl
+    Endif
+  EndFor
+  
+  ' Calculate the pulse of the ball  
+  If elm[0]["timeline"] > 0 Then
+    zoom =1+(0.5*Math.Sin(elm[0]["timeline"]/100))
+    Shapes.Zoom(elm[0]["shape"], zoom, zoom)
+  EndIf
+  
+  ' Calculate the rotation of the box : One turn in two seconds
+  Shapes.Rotate(elm[1]["shape"], Math.Remainder((elm[1]["timeline"]/(1000 * 2)) * 360, 360) )
+  
+  ' We pause the computer
+  Program.Delay(50)
+EndWhile
+
+' Handle the keyboard
+Sub OnKeyDown
+  ' If press Escape quit the game
+  If GraphicsWindow.LastKey = "Escape" Then
+    Program.End()
+  EndIf
+  ' If presse space bar, enable/disable the pulse of the ball
+  If GraphicsWindow.LastKey = "Space" Then
+    If elm[0]["startTimeline"] > 0 Then
+      elm[0]["startTimeline"] = -1
+      elm[0]["timeline"] = -1
+    Else
+      elm[0]["startTimeline"] = Clock.ElapsedMilliseconds
+      elm[0]["timeline"] = 0
+    EndIf
+  EndIf
+EndSub
+
+  

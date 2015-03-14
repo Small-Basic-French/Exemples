@@ -1,0 +1,61 @@
+' Move delay in ms
+delay = 2000
+' Move width in pixel
+move = 200
+
+' Create the ball
+GraphicsWindow.Show()
+ball = Shapes.AddEllipse(20,20)
+ballPos = 0
+ballPosX = 0
+ballPosY = 0
+offX = 1
+offY = 0
+Shapes.Move(ball, 10 + ballPosX,10 + ballPosY)
+
+' Handle the key press
+GraphicsWindow.KeyDown = OnKeyDown
+
+' Start the timeline
+startTimeline = Clock.ElapsedMilliseconds
+lastTimeline = 0
+' Loop
+While ballPos < move
+  ' Where we are in the timeline ?
+  timeline = Clock.ElapsedMilliseconds - startTimeline
+  ' Calculate the elapsed time
+  elapsed = timeline - lastTimeline
+  ' Calculate the ball movement in the elapsed time
+  ballMovement = (elapsed * move) / delay
+  ' Add the movement at the ball position
+  ballPos = ballPos + ballMovement
+  ballPosX = ballPosX + (ballMovement * offX)
+  ballPosY = ballPosY + (ballMovement * offY)
+  ' Move the ball
+  Shapes.Move(ball, 10 + ballPosX,10 + ballPosY)
+  ' Simulate a long calculation to disrupts our program
+  If ballPos < move/2 Then
+    Program.Delay(Math.GetRandomNumber(150))
+  EndIf
+  ' Save the timeline for next loop
+  lastTimeline = timeline
+EndWhile
+' Calculate the real time used
+GraphicsWindow.Title = Clock.ElapsedMilliseconds - startTimeline
+
+Sub OnKeyDown
+  If GraphicsWindow.LastKey = "Up" Then
+    offX = 0
+    offY = -1
+  ElseIf GraphicsWindow.LastKey = "Down" Then
+    offX = 0
+    offY = 1
+  ElseIf GraphicsWindow.LastKey = "Left" Then
+    offX = -1
+    offY = 0
+  ElseIf GraphicsWindow.LastKey = "Right" Then
+    offX = 1
+    offY = 0
+  EndIf
+EndSub
+  
